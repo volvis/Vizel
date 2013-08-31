@@ -1,0 +1,20 @@
+[color]
+default = 0xFFFFFF
+names = 0x00FF00
+hilight = 0xFF0000
+hilightKeys = []
+namesKeys = **
+
+[speeds]
+defaultSpeed = 6
+fastSpeed = 12
+slowSpeed = 3
+
+[audio]
+talkBlip = blip.wav
+
+[game]
+startfile = assets/sample/Opening.txt
+
+[shorthands]
+M = Mike
