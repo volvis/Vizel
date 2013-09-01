@@ -24,6 +24,66 @@ JILL looks out the window. She has a PUZZLED look on her face.
 	whittling, something's gonna happen. 
 ```
 
-When interpreting scripts like these, Vizel looks for general keywords, tabulations and uppercased words to make an educated guess on what should be rendered on screen. Given a list of assets, it tries to figure out the best match for every line. For example, it picks the keywords JILL and PUZZLED from the second line, and it might conclude that perhaps the character JILL should look like the graphic from 'assets/characters/jill_puzzled.png'.
+When interpreting scripts like these, Vizel looks for general keywords, tabulations and uppercased words to make an educated guess on what should be rendered on screen. Given a list of assets, it tries to figure out the best match for every line.
 
-More as the project progresses!
+```
+INT. JILL'S HOUSE, BEDROOM, DAY
+```
+
+Lines that start with the keywords INT. or EXT. are interpreted as clues for the background. When Vizel runs into line like this, it looks for assets in the <code>backgrounds</code> folder for a match and orders the engine to set it as the backdrop.
+
+```
+		JILL (looking ANGRY)
+	I'm furious at why nothing
+	seems to ever work!
+```
+
+Lines starting with two tabulations or eight spaces are interpreted as the character doing the talking. The name may be followed by numerous adjectives (all in uppercase) and Vizel attempts to find a character under the <code>characters</code> folder that suits those best. Vizel also has a <code>Map<String,String></code> key pair of actor names, which can be used to transform the displayed names into something else, for example JILL becomes "Jill McDoughlan".
+
+There are a few special character names (NARRATION, SFX) for cases when the shown dialogue can't be traced to a specific actor.
+
+```
+		JILL (VO)
+	This is internal monologue.
+```
+
+Names can also contain the keyword VO for voice over lines. These can be used to distinguish internal monologue from speech.
+
+The following lines that start with a single tabulation (four spaces) are interpreted as lines of dialogue. It collects all the lines into one string until it comes across a blank line, and sends that along with the speaker's name to the engine.
+
+```
+		SHIMON (VO, visibly ANGRY)
+	I can't believe this...
+			Shout at Scone.
+			Gently whisper at Scone. > WHISPER AT SCONE
+```
+
+Lines that follow dialogue and are preceded by three tabulations (12 spaces) are interpreted as choices to present the player. Vizel keeps internally track of every choice that the player makes in a <code>Map<String,Bool></code> variable, where String is the chosen option and Bool is always True.
+
+If the option is followed by > and a string of letters, Vizel will store the latter instead of the former. This comes to play when the script is given branching paths.
+
+```
+OPT. Shout at Scone.
+
+		SHIMON (SHOUTING)
+	Joe! Front desk! Now!
+
+OPT. WHISPER AT SCONE
+
+		SHIMON (WHISPER)
+	Joe... *whisper whisper*
+
+OPT.
+```
+
+The OPT. keyword signals an optional path. Vizel takes the string that follows the keyword, checks if the player had made a decision with that name, and either proceeds as normal or searches for the next OPT. keyword.
+
+OPT. that doesn't follow a named path serves as an end to diverging paths, and the script will resume as normal.
+
+Optional paths cannot have more optional paths inside them. For that you need to change the script as follows...
+
+```
+CUT TO ENDING
+```
+
+The keywords "CUT TO" signals Vizel to look for a new script from the <code>scripts</code> folder. It then orders the underlying engine to provide the script that matches best, and the story continues from there.

@@ -26,6 +26,7 @@ enum VizelCommands
 	Speak;
 	Narration;
 	SFX;
+	LineNumber(ln:Int);
 }
 
 /**
