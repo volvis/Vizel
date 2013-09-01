@@ -12,6 +12,11 @@ class VizelString
 		
 	}
 	
+	public static function lineFromOption(str:String):String
+	{
+		return str.split(" > ")[0];
+	}
+	
 	public static function capitalize(str:String):String
 	{
 		str = StringTools.trim(str);

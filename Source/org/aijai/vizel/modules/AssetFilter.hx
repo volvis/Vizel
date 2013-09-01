@@ -10,6 +10,7 @@ interface IAssetFilter
 {
 	public function getActor(Keywords:Array<String>):String;
 	public function getBackground(Keywords:Array<String>):String;
+	public function getScript(Keywords:Array<String>):String;
 }
 
 class AssetFilter implements IAssetFilter
@@ -55,6 +56,11 @@ class AssetFilter implements IAssetFilter
 				}
 			}
 		}
+	}
+	
+	public function getScript(Keywords:Array<String>):String
+	{
+		return get(Keywords, sortFromScript);
 	}
 	
 	public function getActor(Keywords:Array<String>):String
@@ -128,6 +134,12 @@ class AssetFilter implements IAssetFilter
 	private function sortFromCharacter(a:String, b:String):Int
 	{
 		var keywordSort:Int = sortByEreg(a, b, ~/character.+png$/);
+		if (keywordSort == 0) return sortByFilename(a, b); else return keywordSort;
+	}
+	
+	private function sortFromScript(a:String, b:String):Int
+	{
+		var keywordSort:Int = sortByEreg(a, b, ~/script.+txt$/);
 		if (keywordSort == 0) return sortByFilename(a, b); else return keywordSort;
 	}
 	

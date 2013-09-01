@@ -5,10 +5,12 @@ enum LineType
 	UNKNOWN(source:String, position:Int);
 	EMPTY(source:String, position:Int);
 	LOCATION(source:String, position:Int);
-	CONDITIONAL(source:String, position:Int);
+	CONDITION(source:String, position:Int);
 	ACTOR(source:String, position:Int);
 	DIALOGUE(source:String, position:Int);
 	EVENT(source:String, position:Int);
+	OPTION(source:String, position:Int);
+	SCRIPT(source:String, position:Int);
 }
 
 /**
@@ -57,10 +59,15 @@ class LineReader
 			{
 				return LOCATION(src, filepos);
 			}
-			var conditionExpr:EReg = ~/^COND\./;
+			var conditionExpr:EReg = ~/^OPT\./;
 			if (conditionExpr.match(lineSource))
 			{
-				return CONDITIONAL(src, filepos);
+				return CONDITION(src, filepos);
+			}
+			var cutExpr:EReg = ~/^(CUT TO)/;
+			if (cutExpr.match(lineSource))
+			{
+				return SCRIPT(src, filepos);
 			}
 			var eventExpr:EReg = ~/^\w+/;
 			if (eventExpr.match(lineSource))
@@ -75,6 +82,10 @@ class LineReader
 		else if (numTabs == 2)
 		{
 			return ACTOR(src, filepos);
+		}
+		else if (numTabs == 3)
+		{
+			return OPTION(src, filepos);
 		}
 
 		return UNKNOWN(lineSource, filepos);
