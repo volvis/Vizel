@@ -87,3 +87,8 @@ CUT TO ENDING
 ```
 
 The keywords "CUT TO" signals Vizel to look for a new script from the <code>scripts</code> folder. It then orders the underlying engine to provide the script that matches best, and the story continues from there.
+
+
+### Note on performance
+
+At this point performance of the framework is a non-issue. I imagine that reading and displaying dialogue is not what one might call time critical code, and the Vizel core would only receive update notifications once in a few seconds.

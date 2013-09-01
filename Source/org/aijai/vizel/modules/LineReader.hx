@@ -22,10 +22,10 @@ class LineReader
 	private var source:Array<String>;
 	public var lineNumber:Int;
 	
-	public function new(sourceText:String) 
+	public function new(sourceText:String, line:Int = 0) 
 	{
 		source = sourceText.split("\n");
-		lineNumber = 0;
+		lineNumber = line;
 	}
 	
 	public function iterator():Iterator<LineType>
