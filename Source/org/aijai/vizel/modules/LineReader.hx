@@ -1,11 +1,21 @@
-package org.aijai.vizel;
+package org.aijai.vizel.modules;
 
+enum LineType
+{
+	UNKNOWN(source:String, position:Int);
+	EMPTY(source:String, position:Int);
+	LOCATION(source:String, position:Int);
+	CONDITIONAL(source:String, position:Int);
+	ACTOR(source:String, position:Int);
+	DIALOGUE(source:String, position:Int);
+	EVENT(source:String, position:Int);
+}
 
 /**
  * ...
  * @author Pekka Heikkinen
  */
-class VizelCore
+class LineReader
 {
 	private var source:Array<String>;
 	public var lineNumber:Int;
@@ -16,7 +26,7 @@ class VizelCore
 		lineNumber = 0;
 	}
 	
-	public function iterator():Iterator<VizelLineType>
+	public function iterator():Iterator<LineType>
 	{
 		return this;
 	}
@@ -26,7 +36,7 @@ class VizelCore
 		return lineNumber < source.length;
 	}
 	
-	public function next():VizelLineType
+	public function next():LineType
 	{
 		var filepos = lineNumber;
 		var lineSource:String = source[lineNumber++];
@@ -34,45 +44,40 @@ class VizelCore
 		
 		if (!~/\w/.match(lineSource))
 		{
-			return VizelLineType.EMPTY(src, filepos);
+			return EMPTY(src, filepos);
 		}
 		
 		var numTabs:Int = countStartingTabs(lineSource);
 		
 		if (numTabs == 0)
 		{
-			var eventExpr:EReg = ~/^\w+/;
-			if (eventExpr.match(lineSource))
-			{
-				return VizelLineType.EVENT(src, filepos);
-			}
+			
 			var locationExpr:EReg = ~/^INT\.|EXT\./;
 			if (locationExpr.match(lineSource))
 			{
-				return VizelLineType.LOCATION(src, filepos);
+				return LOCATION(src, filepos);
 			}
 			var conditionExpr:EReg = ~/^COND\./;
 			if (conditionExpr.match(lineSource))
 			{
-				return VizelLineType.CONDITIONAL(src, filepos);
+				return CONDITIONAL(src, filepos);
+			}
+			var eventExpr:EReg = ~/^\w+/;
+			if (eventExpr.match(lineSource))
+			{
+				return EVENT(src, filepos);
 			}
 		}
 		else if (numTabs == 1)
 		{
-			return VizelLineType.DIALOGUE(src, filepos);
+			return DIALOGUE(src, filepos);
 		}
 		else if (numTabs == 2)
 		{
-			return VizelLineType.ACTOR(src, filepos);
+			return ACTOR(src, filepos);
 		}
 
-		return VizelLineType.UNKNOWN(lineSource, filepos);
-	}
-	
-	private function capitalize(str:String):String
-	{
-		str = StringTools.trim(str);
-		return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
+		return UNKNOWN(lineSource, filepos);
 	}
 	
 	private function countStartingTabs(str):Int
@@ -96,19 +101,6 @@ class VizelCore
 		return tabs;
 	}
 	
-	private function collectKeywords(source:String)
-	{
-		var collection:Array<String> = [];
-		var keywordExpr:EReg = ~/[A-Z]{2,}/;
-		
-		var positionExpr: { pos:Int, len:Int } = {pos:0, len:0};
-		
-		while (keywordExpr.matchSub(source, positionExpr.pos+positionExpr.len))
-		{
-			positionExpr = keywordExpr.matchedPos();
-			collection.push(source.substring(positionExpr.pos, positionExpr.pos + positionExpr.len));
-		}
-		return collection;
-	}
+	
 	
 }

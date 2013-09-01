@@ -1,19 +1,25 @@
-package org.aijai.vizel.implementations;
+package org.aijai.vizel.modules;
 import haxe.ds.ArraySort;
-import org.aijai.vizel.interfaces.IAssetProvider;
 
 /**
  * ...
  * @author Pekka Heikkinen
  */
 
+interface IAssetFilter
+{
+	public function getActor(Keywords:Array<String>):String;
+	public function getBackground(Keywords:Array<String>):String;
+}
 
-class AssetProvider implements IAssetProvider
+class AssetFilter implements IAssetFilter
 {
 	private var keywords:Map < String, Array<Int> > ;
 	private var source:Array<String>;
 	
-	public function new() {}
+	public function new(Source:Iterator<String>) {
+		load(Source);
+	}
 	
 	/**
 	 * Insert the list of assets to search from.
@@ -22,7 +28,7 @@ class AssetProvider implements IAssetProvider
 	 * 
 	 * @param	Source
 	 */
-	public function load(Source:Iterator<String>):Void
+	private function load(Source:Iterator<String>):Void
 	{
 		source = [];
 		keywords = new Map < String, Array<Int> > ();
