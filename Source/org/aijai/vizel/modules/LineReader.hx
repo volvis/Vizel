@@ -11,6 +11,7 @@ enum LineType
 	EVENT(source:String, position:Int);
 	OPTION(source:String, position:Int);
 	SCRIPT(source:String, position:Int);
+	CAMERA(source:String, position:Int);
 }
 
 /**
@@ -58,6 +59,11 @@ class LineReader
 			if (locationExpr.match(lineSource))
 			{
 				return LOCATION(src, filepos);
+			}
+			var cameraExpr:EReg = ~/^CAM\.|^CAMERA/;
+			if (cameraExpr.match(lineSource))
+			{	
+				return CAMERA(src, filepos);
 			}
 			var conditionExpr:EReg = ~/^OPT\./;
 			if (conditionExpr.match(lineSource))

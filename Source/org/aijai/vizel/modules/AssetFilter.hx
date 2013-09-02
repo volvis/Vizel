@@ -58,6 +58,11 @@ class AssetFilter implements IAssetFilter
 		}
 	}
 	
+	public function getAll():Array<String>
+	{
+		return source;
+	}
+	
 	public function getScript(Keywords:Array<String>):String
 	{
 		return get(Keywords, sortFromScript);
